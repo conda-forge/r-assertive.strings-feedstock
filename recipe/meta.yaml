@@ -1,5 +1,4 @@
 {% set version = '0.0-3' %}
-
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -10,25 +9,26 @@ package:
 source:
   fn: assertive.strings_{{ version }}.tar.gz
   url:
-    - https://cran.r-project.org/src/contrib/assertive.strings_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/assertive.strings/assertive.strings_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/assertive.strings_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/assertive.strings/assertive.strings_{{ version }}.tar.gz
   sha256: d541d608a01640347d661cc9a67af8202904142031a20caa270f1c83d0ccd258
 
 build:
-  number: 0
+  merge_build_host: True  # [win]
+  number: 1
   skip: true  # [win32]
-
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
+    - {{posix}}zip               # [win]
+  host:
     - r-base
     - r-assertive.base >=0.0_2
     - r-assertive.types
     - r-stringi
-
   run:
     - r-base
     - r-assertive.base >=0.0_2
@@ -37,7 +37,7 @@ requirements:
 
 test:
   commands:
-    - $R -e "library('assertive.strings')"  # [not win]
+    - $R -e "library('assertive.strings')"           # [not win]
     - "\"%R%\" -e \"library('assertive.strings')\""  # [win]
 
 about:
@@ -56,4 +56,6 @@ extra:
     - bgruening
     - daler
     - jdblischak
+    - cbrueffer
+    - dbast
     - jenzopr
